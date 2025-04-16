@@ -217,7 +217,7 @@ if __name__ == '__main__':
             
     # commit final
     argparser = argparse.ArgumentParser()
-    argparser.add_argument('--data', type=str, default='ethers_data')
+    argparser.add_argument('--data', type=str, default='ethers-data')
     argparser.add_argument('--model', type=str, default='dualcata-tanh-4')
     argparser.add_argument('--data-name', type=str, default='PyG_BTC_2015')
     argparser.add_argument('--use-unlabeled', type=str, default='SEMI', help="Regard unlabeled samples as negative or not.")

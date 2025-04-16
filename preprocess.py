@@ -7,8 +7,8 @@ import json
 import os
 import argparse
 from sklearn import preprocessing
-dir='/kaggle/input/etherp-data'
-data_dir='/kaggle/input/etherp-data'
+dir='/kaggle/input/ethers-data'
+data_dir='/kaggle/input/ethers-data'
 def load_pickle(fname):
     with open(os.path.join(data_dir,fname), 'rb') as f:
         return pickle.load(f)
@@ -92,7 +92,7 @@ def generate_sequences(args):
     
 if __name__ == '__main__':
     argparser = argparse.ArgumentParser()
-    argparser.add_argument('--data', type=str, default='ethers_data')
+    argparser.add_argument('--data', type=str, default='ethers-data')
     argparser.add_argument('--sort-by', type=int, default=-1,
                         help="Sort txes by which attribute dim")
     argparser.add_argument('--length', type=int, default=32,

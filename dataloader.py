@@ -25,8 +25,8 @@ import numpy as np
 
 import random
 
-dir='/kaggle/working/MangXaHoi/data/ethers_data'#change to your own data dir
-data_dir='/kaggle/working/MangXaHoi/data/ethers_data'#change to your own data dir
+dir='/kaggle/working/MangXaHoi/data/ethers-data'#change to your own data dir
+data_dir='/kaggle/working/MangXaHoi/data/ethers-data'#change to your own data dir
 
 # data_dir='/data/EthereumP'#change to your own data dir
 
