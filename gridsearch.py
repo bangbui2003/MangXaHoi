@@ -24,7 +24,7 @@ from argparse import Namespace
 
 args = Namespace(
     # Dataset & xử lý dữ liệu
-    data='etherp-data',
+    data='ethers_data',
     data_name='PyG_BTC_2015',
     use_unlabeled='SEMI',
     scale='minmax',
