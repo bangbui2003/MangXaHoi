@@ -92,7 +92,7 @@ def generate_sequences(args):
     
 if __name__ == '__main__':
     argparser = argparse.ArgumentParser()
-    argparser.add_argument('--data', type=str, default='etherp-data')
+    argparser.add_argument('--data', type=str, default='ethers_data')
     argparser.add_argument('--sort-by', type=int, default=-1,
                         help="Sort txes by which attribute dim")
     argparser.add_argument('--length', type=int, default=32,
