@@ -81,7 +81,7 @@ if __name__ == "__main__":
         result_entry = {"config": full_args, "metrics": metrics}
         results.append(result_entry)
         
-    with open('grid_results.json', 'w') as f:
+    with open('/kaggle/working/grid_results.json', 'w') as f:
         json.dump(results, f, indent=4)
 
     # In top-k theo F1
