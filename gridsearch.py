@@ -6,14 +6,9 @@ import json
 
 # Grid search param grid
 param_grid = {
-    'num_hidden': [64, 128],
-    'num_layers': [1, 2],
-    'dropout': [0.2, 0.5],
-    'lr': [1e-3, 1e-4],
-    'encoder_layer': ['dualcata-softmax-4', 'dualcata-tanh-4'],
-    'rnn': ['gru', 'lstm'],
-    'rnn_agg': ['last', 'mean'],
-    'oversample': [None, 1.0],
+    'num_hidden': [64, 128, 256],
+    'model': ['dualcata-tanh-4',
+    'lr': [1e-3, 5e-4, 1e-4]
 }
 
 keys, values = zip(*param_grid.items())
@@ -21,6 +16,17 @@ all_combinations = [dict(zip(keys, v)) for v in product(*values)]
 
 # Default params
 from argparse import Namespace
+
+# param_grid = {
+#     'num_hidden': [64, 128],
+#     'num_layers': [1, 2],
+#     'dropout': [0.2, 0.5],
+#     'lr': [1e-3, 1e-4],
+#     'model': ['dualcata-softmax-4', 'dualcata-tanh-4'],
+#     'rnn': ['gru', 'lstm'],
+#     'rnn_agg': ['last', 'mean'],
+#     'oversample': [None, 1.0],
+# }
 
 args = Namespace(
     # Dataset & xử lý dữ liệu
@@ -67,7 +73,12 @@ args = Namespace(
     gpu=0,
     num_workers=16,
     sample_gpu=False,
-    inductive=False
+    inductive=False,
+    dropout=0.2,
+    num_layers=2,
+    rnn='gru',
+    rnn_agg='max',
+    oversample=None
 )
 
 if __name__ == "__main__":
