@@ -7,8 +7,7 @@ import json
 # Grid search param grid
 param_grid = {
     'num_hidden': [64, 128, 256],
-    'model': ['dualcata-softmax-4', 'dualcata-tanh-4'],
-    'lr': [1e-3, 5e-4, 1e-4]
+    'model': ['dualcata-softmax-4', 'dualcata-tanh-4']
 }
 
 keys, values = zip(*param_grid.items())
