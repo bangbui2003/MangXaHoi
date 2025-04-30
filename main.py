@@ -36,10 +36,10 @@ def main(args):
     g, n_classes = load_data(data_path,  train_rate=args.train_rate, anomaly_rate= args.anomaly_rate,random_state=args.random_state)
     length = args.length
     sb = 'a'
-    in_sentences = np.load(os.path.join(output_files_path, f'/in_sentences_{length}.npy'),allow_pickle=True)#revised the os.path.join
-    out_sentences = np.load(os.path.join(output_files_path, f'/out_sentences_{length}.npy'),allow_pickle=True)#revised the os.path.join
-    in_sentences_len = torch.load(os.path.join(output_files_path, f'/in_sentences_len_{length}.pt'))#revised the .pt
-    out_sentences_len = torch.load(os.path.join(output_files_path, f'/out_sentences_len_{length}.pt'))#revised the .pt
+    in_sentences = np.load(f'/{output_files_path}/in_sentences_{length}.npy',allow_pickle=True)#revised the os.path.join
+    out_sentences = np.load(f'/{output_files_path}/out_sentences_{length}.npy'),allow_pickle=True)#revised the os.path.join
+    in_sentences_len = torch.load(f'/{output_files_path}/in_sentences_len_{length}.pt'))#revised the .pt
+    out_sentences_len = torch.load(f'/{output_files_path}/out_sentences_len_{length}.pt'))#revised the .pt
     lens_in = torch.as_tensor(in_sentences_len)
     lens_out = torch.as_tensor(out_sentences_len)
     in_sentences = pad_sequence(in_sentences.tolist(), batch_first=True)
