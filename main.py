@@ -28,17 +28,18 @@ from dataloader import *
 
 
 
-def train_and_evaluate(args):
+def main(args):
     # Load data
-    data_path=f'/kaggle/input/{args.data}'
+    data_path=f'/{args.notebook_input_directory}/{args.data}'
+    output_files_path = f'/{args.notebook_output_directory}/{args.data}'
     data_path = os.path.join(data_path, 'data.pt')
     g, n_classes = load_data(data_path,  train_rate=args.train_rate, anomaly_rate= args.anomaly_rate,random_state=args.random_state)
     length = args.length
     sb = 'a'
-    in_sentences = np.load(os.path.join(data_dir, f'in_sentences_{length}.npy'),allow_pickle=True)#revised the os.path.join
-    out_sentences = np.load(os.path.join(data_dir, f'out_sentences_{length}.npy'),allow_pickle=True)#revised the os.path.join
-    in_sentences_len = torch.load(os.path.join(data_dir, f'in_sentences_len_{length}.pt'))#revised the .pt
-    out_sentences_len = torch.load(os.path.join(data_dir, f'out_sentences_len_{length}.pt'))#revised the .pt
+    in_sentences = np.load(os.path.join(output_files_path, f'in_sentences_{length}.npy'),allow_pickle=True)#revised the os.path.join
+    out_sentences = np.load(os.path.join(output_files_path, f'out_sentences_{length}.npy'),allow_pickle=True)#revised the os.path.join
+    in_sentences_len = torch.load(os.path.join(output_files_path, f'in_sentences_len_{length}.pt'))#revised the .pt
+    out_sentences_len = torch.load(os.path.join(output_files_path, f'out_sentences_len_{length}.pt'))#revised the .pt
     lens_in = torch.as_tensor(in_sentences_len)
     lens_out = torch.as_tensor(out_sentences_len)
     in_sentences = pad_sequence(in_sentences.tolist(), batch_first=True)
@@ -134,6 +135,8 @@ def train_and_evaluate(args):
                 {'params': weight_params, 'lr': args.weight_lr}])
         scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer,
                         milestones=[10, 15], gamma=0.5)
+        
+        loss_per_epoch_arr = []
         for epoch in range(args.num_epochs):   
             model = model.to(device)
             model.train()
@@ -141,9 +144,16 @@ def train_and_evaluate(args):
             tic = time.time()
             nodes_num = 0
             batch_len = len(loader_train)
+            test_res_per_epoch = []
 #                 att_in = []
 #                 att_out = []
             fa = []
+            sum_epoch_loss = 0
+            nid_list = []
+            batchpred_list = []
+            attention_list = []
+            edges_emb_list = []
+            label_list = []
             for loader_id, (sub_graph, subset,  batch_size) in enumerate(loader_train):
                 sub_graph = sub_graph.to(device)
                 in_pack, lens_in = sens_selector_train.select(subset, in_sentences_train, g_train.lens_in)
@@ -152,7 +162,7 @@ def train_and_evaluate(args):
                 in_pack = in_pack.to(device)
                 out_pack = out_pack.to(device)
                 f_t0 = time.time()
-                batch_pred, a = model( in_pack, out_pack, lens_in, lens_out, sub_graph)
+                batch_pred, a, edges_emb = model( in_pack, out_pack, lens_in, lens_out, sub_graph)
                 loss = loss_fcn(batch_pred[:batch_size], g_train.labels[subset][:batch_size].to(device))
                 optimizer.zero_grad()
                 loss.backward()
@@ -161,8 +171,20 @@ def train_and_evaluate(args):
                 tic_step = time.time()
                 batch_loss += loss.item()
                 nodes_num += batch_size
+                sum_epoch_loss += loss.item()
                 print(f'Epoch {epoch} | Batch {loader_id+1}/{batch_len} | Loss {loss.item()} | Nodes {batch_size}:{len(subset)}')
                 fa.append(a)
+                
+                #Result for chart
+                nid_list.append(subset[:batch_size])
+                batchpred_list.append(batch_pred[:batch_size])
+                edges_emb_list.append(edges_emb[:batch_size])
+                attention_list.append(a[:batch_size])
+                label_list.append(g_train.labels[subset][:batch_size].to(device))
+            
+            avg_epoch_loss = sum_epoch_loss / batch_len
+            loss_per_epoch_arr.append([epoch, avg_epoch_loss]) 
+                
             # Log parameter weight
             fa = torch.cat(fa, 0)
             fa_mean = fa.mean(0).reshape(-1)
@@ -177,6 +199,7 @@ def train_and_evaluate(args):
                 val_results, test_results = evaluate_light(model, g, loader_val, loader_test, sens_selector,in_sentences, 
                                                             out_sentences, device)
                 results_str = ""
+                test_res_per_epoch.append([epoch, test_results])
                 for item, value in test_results.items():
                     results_str += item
                     results_str += ':'
@@ -208,7 +231,7 @@ def train_and_evaluate(args):
                             'Best_AUC_std':best.std(0)[3].item()}
     print(best_all)
     return best_all
-        
+
         
 if __name__ == '__main__':
     needed_dirs = ['./results', './embs', './model', './profilers', './temp']
@@ -216,9 +239,12 @@ if __name__ == '__main__':
         if not os.path.exists(dir_name):
             os.makedirs(dir_name)
             
-    # commit final
+
+    
     argparser = argparse.ArgumentParser()
-    argparser.add_argument('--data', type=str, default='ethers-data')
+    argparser.add_argument('--data', type=str, default='EthereumS')
+    argparser.add_argument('--notebook-input-directory', type=str, default='content/MangXaHoi/data')
+    argparser.add_argument('--notebook-output-directory', type=str, default='content/MangXaHoi/data')
     argparser.add_argument('--model', type=str, default='dualcata-tanh-4')
     argparser.add_argument('--data-name', type=str, default='PyG_BTC_2015')
     argparser.add_argument('--use-unlabeled', type=str, default='SEMI', help="Regard unlabeled samples as negative or not.")
