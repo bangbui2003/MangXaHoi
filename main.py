@@ -31,6 +31,7 @@ from dataloader import *
 def main(args):
     # Load data
     data_path=f'/{args.notebook_input_directory}/{args.data}'
+    data_path = os.path.join(data_path, 'data.pt')
     output_files_path = f'/{args.notebook_output_directory}/{args.data}'
     g, n_classes = load_data(data_path,  train_rate=args.train_rate, anomaly_rate= args.anomaly_rate,random_state=args.random_state)
     length = args.length
