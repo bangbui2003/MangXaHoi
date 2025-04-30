@@ -37,7 +37,7 @@ def main(args):
     length = args.length
     sb = 'a'
     in_sentences = np.load(f'/{output_files_path}/in_sentences_{length}.npy',allow_pickle=True)#revised the os.path.join
-    out_sentences = np.load(f'/{output_files_path}/out_sentences_{length}.npy'),allow_pickle=True)#revised the os.path.join
+    out_sentences = np.load(f'/{output_files_path}/out_sentences_{length}.npy',allow_pickle=True)#revised the os.path.join
     in_sentences_len = torch.load(f'/{output_files_path}/in_sentences_len_{length}.pt')#revised the .pt
     out_sentences_len = torch.load(f'/{output_files_path}/out_sentences_len_{length}.pt')#revised the .pt
     lens_in = torch.as_tensor(in_sentences_len)
