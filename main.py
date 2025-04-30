@@ -207,6 +207,7 @@ def train_and_evaluate(args):
                             'Best_F1_std':best.std(0)[2].item(), 
                             'Best_AUC_std':best.std(0)[3].item()}
     print(best_all)
+    return best_all
         
         
 if __name__ == '__main__':
